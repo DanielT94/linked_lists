@@ -51,11 +51,75 @@ class LinkedList
 
   def pop
     return if @head.nil?
+
+    if @head.next_node.nil?
+      removed = @head
+      @next_node = nil
+      return removed
+    end
+
     current_node = @head
-    until current_node = current_node.tail
+    loop do
+      break if current_node.next_node.next_node.nil?
+
       current_node = current_node.next_node
+    end
+    removed = current_node.next_node
     current_node.next_node = nil
-    current_node.tail = current_node
+    removed
+  end
+
+  def contains?(value)
+    current_node = @head
+    until current_node.nil?
+      if current_node.value == value
+        return true
+      else current_node = current_node.next_node
+      end
+    end
+    return false
+  end
+
+  def find(value)
+    current_node = @head
+    index = 0
+    found = false
+    until current_node.nil?
+      found = true if current_node.data == value
+      current_node = current_node.next_node
+      index += 1 unless found
+    end
+    index if found
+  end
+
+  def to_s
+    current_node = @head
+    until current_node.nil?
+      print "( #{current_node.data} ) -> "
+      current_node = current_node.next_node
+    end
+  end
+
+  def insert_at(value, index)
+    return puts 'Index is larger than list size' if index > size
+    if index == 0
+      prepend(value)
+    else
+      new_node = Node.new(value, at(index))
+      prev_node = at(index - 1)
+      prev_node.next_node = new_node
+    end
+  end
+
+  def remove_at(index)
+    return puts 'Index is larger than list size' if (index + 1) > size
+    if index == size
+      pop
+    elsif index == 0
+      @head at(1)
+    else 
+      prev_node = at(index - 1)
+      prev_node.next_node = at(index + 1)
     end
   end
 
