@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative './node'
 
 class LinkedList
@@ -8,14 +10,12 @@ class LinkedList
   end
 
   def append(value)
-    if (head.nil?)
+    if head.nil?
       @head = Node.new(value, nil)
     else
-      current_node = @head
-      while (!current_node.next_node.nil?)
-        current_node = current_node.next_node
-      end
-      current_node.next_node = Node.new(value, nil)
+      last_node = @head
+      last_node = last_node.next_node until last_node.next_node.nil?
+      last_node.next_node = Node.new(value, nil)
     end
   end
 
@@ -35,9 +35,7 @@ class LinkedList
   end
 
   def tail(current_node = @head)
-    until current_node.next_node.nil?
-      current_node = current_node.next_node
-    end
+    current_node = current_node.next_node until current_node.next_node.nil?
     current_node
   end
 
@@ -74,10 +72,11 @@ class LinkedList
     until current_node.nil?
       if current_node.value == value
         return true
-      else current_node = current_node.next_node
+      else
+        current_node = current_node.next_node
       end
     end
-    return false
+    false
   end
 
   def find(value)
@@ -85,7 +84,7 @@ class LinkedList
     index = 0
     found = false
     until current_node.nil?
-      found = true if current_node.data == value
+      found = true if current_node.value == value
       current_node = current_node.next_node
       index += 1 unless found
     end
@@ -95,14 +94,15 @@ class LinkedList
   def to_s
     current_node = @head
     until current_node.nil?
-      print "( #{current_node.data} ) -> "
+      print "( #{current_node.value} ) -> "
       current_node = current_node.next_node
     end
   end
 
   def insert_at(value, index)
     return puts 'Index is larger than list size' if index > size
-    if index == 0
+
+    if index.zero?
       prepend(value)
     else
       new_node = Node.new(value, at(index))
@@ -113,14 +113,14 @@ class LinkedList
 
   def remove_at(index)
     return puts 'Index is larger than list size' if (index + 1) > size
+
     if index == size
       pop
-    elsif index == 0
-      @head at(1)
-    else 
+    elsif index.zero?
+      @head = at(1)
+    else
       prev_node = at(index - 1)
       prev_node.next_node = at(index + 1)
     end
   end
-
 end
